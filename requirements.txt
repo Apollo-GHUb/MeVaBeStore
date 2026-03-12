@@ -1,0 +1,4 @@
+Flask==3.0.0
+polars==0.20.10
+gunicorn==21.2.0
+pyarrow==15.0.0
