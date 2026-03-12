@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Giỏ hàng - Mẹ và Bé Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-gray-100">
+    <header class="bg-[#131921] text-white p-3 flex justify-between items-center">
+        <a href="/"
+            class="flex items-center space-x-2 font-bold text-2xl hover:border-white border border-transparent p-1"><i
+                class="fa-solid fa-baby-carriage text-yellow-400"></i><span>Mẹ & Bé Store</span></a>
+    </header>
+
+    <main class="max-w-[1000px] mx-auto p-4 mt-8">
+        <div class="bg-white p-6 rounded shadow-sm">
+            <h1 class="text-3xl font-bold mb-6 border-b pb-4">Giỏ hàng của bạn</h1>
+            <div id="cart-items" class="space-y-4"></div>
+            <div class="mt-8 border-t pt-4 text-right">
+                <p class="text-2xl">Tổng cộng: <span id="cart-total" class="font-bold text-[#B12704]">0 ₫</span></p>
+                <button onclick="clearCart()"
+                    class="mt-4 bg-[#FFD814] hover:bg-[#F7CA00] text-black font-bold py-2 px-8 rounded shadow">Tiến hành
+                    thanh toán</button>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('myCart')) || [];
+        const cartContainer = document.getElementById('cart-items');
+
+        function renderCart() {
+            if (cart.length === 0) {
+                cartContainer.innerHTML = '<p class="text-gray-500 italic">Giỏ hàng của bạn đang trống. <a href="/" class="text-blue-600 hover:underline">Tiếp tục mua sắm</a></p>';
+                document.getElementById('cart-total').innerText = "0 ₫";
+                return;
+            }
+
+            let html = '';
+            let total = 0;
+            cart.forEach(item => {
+                total += item.price * item.qty;
+                html += `
+                <div class="flex items-center justify-between border-b pb-4">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-16 h-16 bg-gray-100 flex items-center justify-center rounded"><i class="fa-solid fa-image text-gray-400"></i></div>
+                        <div>
+                            <p class="font-bold text-lg"><a href="/product/${item.id}" class="hover:text-orange-600">${item.name}</a></p>
+                            <p class="text-sm text-gray-500">Mã SP: ${item.id}</p>
+                        </div>
+                    </div>
+                    <div class="text-right">
+                        <p class="font-bold text-[#B12704]">₫ ${item.price.toLocaleString('vi-VN')}</p>
+                        <p class="text-sm">Số lượng: <b>${item.qty}</b></p>
+                    </div>
+                </div>`;
+            });
+            cartContainer.innerHTML = html;
+            document.getElementById('cart-total').innerText = total.toLocaleString('vi-VN') + " ₫";
+        }
+
+        function clearCart() {
+            if (cart.length > 0) {
+                cartContainer.innerHTML = '<p class="text-green-600 font-bold text-xl text-center py-8"><i class="fa-solid fa-circle-check mr-2"></i>Đơn hàng đã được ghi nhận thành công!</p>';
+                localStorage.removeItem('myCart');
+                cart = [];
+                document.getElementById('cart-total').innerText = "0 ₫";
+            }
+        }
+        renderCart();
+    </script>
+</body>
+
+</html>
