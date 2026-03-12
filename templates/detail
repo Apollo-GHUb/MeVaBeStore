@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>{{ product.category_l3 }} - Mẹ và Bé Store</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body class="bg-white">
+    <header class="bg-[#131921] text-white p-3 flex justify-between items-center">
+        <a href="/"
+            class="flex items-center space-x-2 font-bold text-2xl hover:border-white border border-transparent p-1"><i
+                class="fa-solid fa-baby-carriage text-yellow-400"></i><span>Mẹ & Bé Store</span></a>
+        <a href="/cart" class="cursor-pointer font-bold flex items-center text-lg hover:text-yellow-400 relative">
+            <i class="fa-solid fa-cart-shopping text-2xl mr-2"></i><span id="cart-badge"
+                class="absolute -top-2 left-3 bg-[#f08804] text-white text-xs px-2 py-0.5 rounded-full">0</span> Giỏ
+            hàng
+        </a>
+    </header>
+
+    <main class="max-w-[1400px] mx-auto p-4 mt-4">
+        <div class="flex gap-8 mb-12 border-b pb-8">
+            <div class="w-1/3 bg-gray-50 h-[400px] flex justify-center items-center border rounded"><i
+                    class="fa-solid fa-image text-6xl text-gray-300"></i></div>
+
+            <div class="w-1/3">
+                <h1 class="text-2xl font-bold text-gray-900 mb-2">{% if product.brand %}[{{ product.brand }}] {% endif
+                    %}{{ product.category_l3 }}</h1>
+                <p class="text-blue-600 text-sm mb-4">Mã SP: {{ product.item_id }}</p>
+                <hr class="my-4">
+
+                <h3 class="font-bold text-lg mb-2">Thông số sản phẩm:</h3>
+                <table class="w-full text-sm text-left text-gray-700">
+                    <tbody>
+                        <tr class="border-b">
+                            <td class="py-2 font-semibold w-1/3 bg-gray-50 px-2">Thương hiệu</td>
+                            <td class="py-2 px-2">{{ product.brand if product.brand else 'Đang cập nhật' }}</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-2 font-semibold bg-gray-50 px-2">Ngành hàng chính</td>
+                            <td class="py-2 px-2">{{ product.category_l1 }}</td>
+                        </tr>
+                        <tr class="border-b">
+                            <td class="py-2 font-semibold bg-gray-50 px-2">Danh mục phụ</td>
+                            <td class="py-2 px-2">{{ product.category_l2 }}</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 font-semibold bg-gray-50 px-2">Phân loại chi tiết</td>
+                            <td class="py-2 px-2">{{ product.category_l3 }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="w-1/3 border rounded p-5 bg-gray-50 shadow-sm h-fit">
+                <p class="text-sm text-gray-500 mb-1">Giá bán chính thức:</p>
+                <p class="text-3xl font-bold text-[#B12704] mb-4">{% if product.price %}₫ {{
+                    "{:,.0f}".format(product.price) }}{% else %}Liên hệ shop{% endif %}</p>
+                <p class="text-green-700 font-bold text-sm mb-4"><i class="fa-solid fa-check mr-1"></i> Còn hàng trong
+                    kho</p>
+
+                <button onclick="addToCart('{{ product.item_id }}', '{{ product.category_l3 | replace("'", "") }}' , {{
+                    product.price if product.price else 0 }})"
+                    class="w-full bg-[#FFD814] hover:bg-[#F7CA00] text-black font-bold py-2.5 rounded-full border border-[#FCD200] mb-3 transition-transform active:scale-95 shadow-sm">Thêm
+                    vào giỏ hàng</button>
+                <a href="/cart"
+                    class="block text-center w-full bg-[#FFA41C] hover:bg-[#FA8900] text-black font-bold py-2.5 rounded-full border border-[#FF8F00] shadow-sm">Xem
+                    Giỏ hàng & Thanh toán</a>
+            </div>
+        </div>
+
+        <div class="mb-12">
+            <h2 class="text-xl font-bold text-[#cc6600] mb-4">🛒 Khách hàng mua sản phẩm này cũng mua</h2>
+            <div class="flex space-x-4 overflow-x-auto pb-4">
+                {% for rec in recs1 %}
+                <a href="/product/{{ rec.item_id }}"
+                    class="min-w-[200px] w-[200px] border rounded p-3 hover:shadow-lg bg-white">
+                    <div class="bg-gray-100 h-32 flex justify-center items-center mb-2"><i
+                            class="fa-solid fa-box text-gray-400"></i></div>
+                    <p class="text-sm text-blue-700 line-clamp-2 hover:text-[#C7511F]">{% if rec.brand %}[{{ rec.brand
+                        }}] {% endif %}{{ rec.category_l3 }}</p>
+                    <p class="text-[#B12704] font-bold mt-1">{% if rec.price %}₫ {{ "{:,.0f}".format(rec.price) }}{%
+                        endif %}</p>
+                    <p class="text-xs text-green-700 font-bold mt-1"><i class="fa-solid fa-bag-shopping mr-1"></i>Lượt
+                        mua: {{ rec.so_lan_mua_cung }}</p>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="mb-12">
+            <h2 class="text-xl font-bold text-[#cc6600] mb-4">🔍 Sản phẩm tương tự (Cùng danh mục)</h2>
+            <div class="flex space-x-4 overflow-x-auto pb-4">
+                {% for rec in recs2 %}
+                <a href="/product/{{ rec.item_id }}"
+                    class="min-w-[200px] w-[200px] border rounded p-3 hover:shadow-lg bg-white">
+                    <div class="bg-gray-100 h-32 flex justify-center items-center mb-2"><i
+                            class="fa-solid fa-box text-gray-400"></i></div>
+                    <p class="text-sm text-blue-700 line-clamp-2 hover:text-[#C7511F]">{% if rec.brand %}[{{ rec.brand
+                        }}] {% endif %}{{ rec.category_l3 }}</p>
+                    <p class="text-[#B12704] font-bold mt-1">{% if rec.price %}₫ {{ "{:,.0f}".format(rec.price) }}{%
+                        endif %}</p>
+                    <p class="text-xs text-gray-500 mt-1">⭐ Điểm tương đồng: {{ rec.category_score }}</p>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+
+    <div id="toast"
+        class="fixed bottom-5 right-5 bg-green-600 text-white px-6 py-3 rounded shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 z-50 flex items-center pointer-events-none">
+        <i class="fa-solid fa-circle-check text-xl mr-3"></i>
+        <span id="toast-msg">Đã thêm vào giỏ hàng</span>
+    </div>
+
+    <script>
+        let cart = JSON.parse(localStorage.getItem('myCart')) || [];
+        document.getElementById('cart-badge').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => { toast.classList.add('translate-y-20', 'opacity-0'); }, 2500);
+        }
+
+        function addToCart(id, name, price) {
+            let item = cart.find(i => i.id === id);
+            if (item) { item.qty++; } else { cart.push({ id, name, price, qty: 1 }); }
+            localStorage.setItem('myCart', JSON.stringify(cart));
+            document.getElementById('cart-badge').innerText = cart.reduce((sum, item) => sum + item.qty, 0);
+            showToast();
+        }
+    </script>
+</body>
+
+</html>
